@@ -88,20 +88,16 @@ public class PlayerMovement : MonoBehaviour
 
             if (_gamepadManager.AButtonPressed(_indexPlayer) || Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log("A Button Pressed");
                 _carryObject.TryTakeObject();
             }
             if (_gamepadManager.BButtonPressed(_indexPlayer))
             {
-                Debug.Log("B Button Pressed");
             }
             if (_gamepadManager.YButtonPressed(_indexPlayer))
             {
-                Debug.Log("Y Button Pressed");
             }
             if (_gamepadManager.XButtonPressed(_indexPlayer))
             {
-                Debug.Log("X Button Pressed");
                 _gamepadManager.Vibration(_indexPlayer);
             }
         }

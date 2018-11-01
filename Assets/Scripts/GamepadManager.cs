@@ -5,51 +5,37 @@ using XInputDotNetPure;
 
 public class GamepadManager : BaseManager
 {
+    public bool useGamepad = false;
+    public int playerNumber = 1;
+
 
     private float _triggerDeadZone = 0.5f;
     private float _stickDeadZone = 0.05f;
 
-    private PlayerIndex _playerIndex;
-    private GamePadState _state;
-    private GamePadState _prevState;
+    private PlayerIndex[] _playerIndex = null;
+    private GamePadState[] _states = null;
+    private GamePadState[] _prevStates = null;
 
-    private PlayerIndex _playerIndex2;
-    private GamePadState _state2;
-    private GamePadState _prevState2;
-
-    private PlayerIndex _playerIndex3;
-    private GamePadState _state3;
-    private GamePadState _prevState3;
-
-    private PlayerIndex _playerIndex4;
-    private GamePadState _state4;
-    private GamePadState _prevState4;
-
-    void Update()
+    private void Start()
     {
-        // player 1
+        _playerIndex = new PlayerIndex[playerNumber];
+        _states = new GamePadState[playerNumber];
+        _prevStates = new GamePadState[playerNumber];
+    }
 
-        _playerIndex = (PlayerIndex)0;
-        _prevState = _state;
-        _state = GamePad.GetState(_playerIndex);
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            useGamepad = !useGamepad;
+        }
 
-        // player 2
-
-        _playerIndex2 = (PlayerIndex)1;
-        _prevState2 = _state2;
-        _state2 = GamePad.GetState(_playerIndex2);
-
-        // player 3
-
-        _playerIndex3 = (PlayerIndex)2;
-        _prevState3 = _state3;
-        _state3 = GamePad.GetState(_playerIndex3);
-
-        // player 4
-
-        _playerIndex4 = (PlayerIndex)3;
-        _prevState4 = _state4;
-        _state4 = GamePad.GetState(_playerIndex4);
+        for(int i = 0; i < playerNumber; i++)
+        {
+            _playerIndex[i] = (PlayerIndex)i;
+            _prevStates[i] = _states[i];
+            _states[i] = GamePad.GetState(_playerIndex[i]);
+        }
     }
 
     public void Vibration(int index)
@@ -59,226 +45,58 @@ public class GamepadManager : BaseManager
 
     public float GetStickPosX(int indexPlayer)
     {
-        if(indexPlayer == 1)
-        {
-            return _state.ThumbSticks.Left.X;
-        }
-        else if (indexPlayer == 2)
-        {
-            return _state2.ThumbSticks.Left.X;
-        }
-        else if (indexPlayer == 3)
-        {
-            return _state3.ThumbSticks.Left.X;
-        }
-        else
-        {
-            return _state4.ThumbSticks.Left.X;
-        }
+        return _states[indexPlayer].ThumbSticks.Left.X;
     }
 
     public float GetStickPosY(int indexPlayer)
     {
-        if (indexPlayer == 1)
-        {
-            return _state.ThumbSticks.Left.Y;
-        }
-        else if (indexPlayer == 2)
-        {
-            return _state2.ThumbSticks.Left.Y;
-        }
-        else if (indexPlayer == 3)
-        {
-            return _state3.ThumbSticks.Left.Y;
-        }
-        else
-        {
-            return _state4.ThumbSticks.Left.Y;
-        }
+        return _states[indexPlayer].ThumbSticks.Left.Y;
     }
 
     public bool RightTriggerPressed(int indexPlayer)
     {
-        if (indexPlayer == 1)
-        {
-            return _state.Triggers.Right >= _triggerDeadZone ? true : false;
-        }
-        else if (indexPlayer == 2)
-        {
-            return _state2.Triggers.Right >= _triggerDeadZone ? true : false;
-        }
-        else if (indexPlayer == 3)
-        {
-            return _state3.Triggers.Right >= _triggerDeadZone ? true : false;
-        }
-        else
-        {
-            return _state4.Triggers.Right >= _triggerDeadZone ? true : false;
-        }
+        return _states[indexPlayer].Triggers.Right >= _triggerDeadZone ? true : false;
     }
 
     public bool LeftTriggerPressed(int indexPlayer)
     {
-        if (indexPlayer == 1)
-        {
-            return _state.Triggers.Left >= _triggerDeadZone ? true : false;
-        }
-        else if (indexPlayer == 2)
-        {
-            return _state2.Triggers.Left >= _triggerDeadZone ? true : false;
-        }
-        else if (indexPlayer == 3)
-        {
-            return _state3.Triggers.Left >= _triggerDeadZone ? true : false;
-        }
-        else
-        {
-            return _state4.Triggers.Left >= _triggerDeadZone ? true : false;
-        }
+        return _states[indexPlayer].Triggers.Left >= _triggerDeadZone ? true : false;
     }
 
     public bool BButtonPressed(int indexPlayer)
     {
-        if (indexPlayer == 1)
+        if (_prevStates[indexPlayer].Buttons.B == ButtonState.Released && _states[indexPlayer].Buttons.B == ButtonState.Pressed)
         {
-            if (_prevState.Buttons.B == ButtonState.Released && _state.Buttons.B == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
-        else if (indexPlayer == 2)
-        {
-            if (_prevState2.Buttons.B == ButtonState.Released && _state2.Buttons.B == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else if (indexPlayer == 3)
-        {
-            if (_prevState3.Buttons.B == ButtonState.Released && _state3.Buttons.B == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else
-        {
-            if (_prevState4.Buttons.B == ButtonState.Released && _state4.Buttons.B == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
+        return false;
     }
 
     public bool AButtonPressed(int indexPlayer)
     {
-        if (indexPlayer == 1)
+        if (_prevStates[indexPlayer].Buttons.A == ButtonState.Released && _states[indexPlayer].Buttons.A == ButtonState.Pressed)
         {
-            if (_prevState.Buttons.A == ButtonState.Released && _state.Buttons.A == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
-        else if (indexPlayer == 2)
-        {
-            if (_prevState2.Buttons.A == ButtonState.Released && _state2.Buttons.A == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else if (indexPlayer == 3)
-        {
-            if (_prevState3.Buttons.A == ButtonState.Released && _state3.Buttons.A == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else
-        {
-            if (_prevState4.Buttons.A == ButtonState.Released && _state4.Buttons.A == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
+        return false;
     }
 
     public bool XButtonPressed(int indexPlayer)
     {
-        if (indexPlayer == 1)
+        if (_prevStates[indexPlayer].Buttons.X == ButtonState.Released && _states[indexPlayer].Buttons.X == ButtonState.Pressed)
         {
-            if (_prevState.Buttons.X == ButtonState.Released && _state.Buttons.X == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
-        else if (indexPlayer == 2)
-        {
-            if (_prevState2.Buttons.X == ButtonState.Released && _state2.Buttons.X == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else if (indexPlayer == 3)
-        {
-            if (_prevState3.Buttons.X == ButtonState.Released && _state3.Buttons.X == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else
-        {
-            if (_prevState4.Buttons.X == ButtonState.Released && _state4.Buttons.X == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
+        return false;
     }
 
     public bool YButtonPressed(int indexPlayer)
     {
-        if (indexPlayer == 1)
+        if (_prevStates[indexPlayer].Buttons.Y == ButtonState.Released && _states[indexPlayer].Buttons.Y == ButtonState.Pressed)
         {
-            if (_prevState.Buttons.Y == ButtonState.Released && _state.Buttons.Y == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
-        else if (indexPlayer == 2)
-        {
-            if (_prevState2.Buttons.Y == ButtonState.Released && _state2.Buttons.Y == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else if (indexPlayer == 3)
-        {
-            if (_prevState3.Buttons.Y == ButtonState.Released && _state3.Buttons.Y == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
-        else
-        {
-            if (_prevState4.Buttons.Y == ButtonState.Released && _state4.Buttons.Y == ButtonState.Pressed)
-            {
-                return true;
-            }
-            return false;
-        }
+        return false;
     }
 
     public float GetStickDeadZone()

@@ -16,6 +16,8 @@ public class Client : MonoBehaviour
     public int scoreMultiplier = 100;
     public float malus = 0.1f;
     public Animator animator = null;
+    public Transform[] ingredientsShowingPlaces = null;
+    public GameObject ingredientShowing = null;
     #endregion
 
     #region Private Fields
@@ -29,6 +31,11 @@ public class Client : MonoBehaviour
     private float _currentChoiceTime = 0;
     private float _waitingTime = 0;
     private float _timeMaxToWait = 0;
+
+    private GameObject _saladRepresentation = null;
+    private GameObject _tomatoRepresentation = null;
+    private GameObject _beanRepresentation = null;
+    private GameObject _hamRepresentation = null;
     #endregion
 
     #region Unity Methods
@@ -71,9 +78,9 @@ public class Client : MonoBehaviour
             _currentChoiceTime += Time.deltaTime;
             if (_currentChoiceTime >= _choiceTime)
             {
+                ingredientShowing.SetActive(true);
                 choiceUI.SetActive(false);
                 _readyToBeServed = true;
-                _target.ActivateClientMeal(true);
                 _target.clientMealUI.GetComponent<MealUI>().ShowIngredients(desiredPlate.ingredients);
             }
         }
@@ -100,6 +107,37 @@ public class Client : MonoBehaviour
         for (int i = 0; i < nbIngredients; i++)
         {
             ingredients[i] = menu[i];
+            switch(ingredients[i])
+            {
+                case Ingredient.BEANS:
+                    {
+                        Transform go = Instantiate(_beanRepresentation, transform.position, Quaternion.identity).transform;
+                        go.SetParent(ingredientsShowingPlaces[i]);
+                        go.localPosition = Vector3.zero;
+                        break;
+                    }
+                case Ingredient.HAM:
+                    {
+                        Transform go = Instantiate(_hamRepresentation, transform.position, Quaternion.identity).transform;
+                        go.SetParent(ingredientsShowingPlaces[i]);
+                        go.localPosition = Vector3.zero;
+                        break;
+                    }
+                case Ingredient.SALAD:
+                    {
+                        Transform go = Instantiate(_saladRepresentation, transform.position, Quaternion.identity).transform;
+                        go.SetParent(ingredientsShowingPlaces[i]);
+                        go.localPosition = Vector3.zero;
+                        break;
+                    }
+                case Ingredient.TOMATO:
+                    {
+                        Transform go = Instantiate(_tomatoRepresentation, transform.position, Quaternion.identity).transform;
+                        go.SetParent(ingredientsShowingPlaces[i]);
+                        go.localPosition = Vector3.zero;
+                        break;
+                    }
+            }
         }
         desiredPlate = new PlateIngredients(nbIngredients, ingredients);
     }
@@ -107,6 +145,10 @@ public class Client : MonoBehaviour
     public void Init()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _saladRepresentation = Resources.Load<GameObject>("SaladRepresentation");
+        _tomatoRepresentation = Resources.Load<GameObject>("TomatoRepresentation");
+        _beanRepresentation = Resources.Load<GameObject>("BeanRepresentation");
+        _hamRepresentation = Resources.Load<GameObject>("HamRepresentation");
         CreatePlate();
     }
 
@@ -118,6 +160,7 @@ public class Client : MonoBehaviour
 
     public void Leave()
     {
+        ingredientShowing.SetActive(false);
         animator.SetBool("Sit", false);
         _target.ActivateClientMeal(false);
         servedUI.SetActive(false);
@@ -131,6 +174,7 @@ public class Client : MonoBehaviour
 
     public void Served()
     {
+        ingredientShowing.SetActive(false);
         _target.ActivateClientMeal(false);
         choiceUI.SetActive(false);
         servedUI.SetActive(true);
