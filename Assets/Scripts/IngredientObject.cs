@@ -6,6 +6,7 @@ public class IngredientObject : MonoBehaviour
 {
     #region Public Fields
     public Ingredient ingredient;
+    public GameObject representation = null;
     #endregion
 
     #region Private Fields

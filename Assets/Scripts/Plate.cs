@@ -7,6 +7,7 @@ public class Plate : MonoBehaviour
     #region Public Fields
     public PlateIngredients plateIngredients;
     public MealUI mealUI = null;
+    public Transform[] ingredientsShowingPlaces = null;
     #endregion
 
     #region Private Fields
@@ -36,6 +37,9 @@ public class Plate : MonoBehaviour
         plateIngredients.ingredientNumber++;
         mealUI.gameObject.SetActive(true);
         mealUI.ShowIngredients(plateIngredients.ingredients);
+        Transform go = Instantiate(io.representation, transform.position, Quaternion.identity).transform;
+        go.SetParent(ingredientsShowingPlaces[plateIngredients.ingredientNumber - 1]);
+        go.localPosition = Vector3.zero;
     }
     #endregion
 

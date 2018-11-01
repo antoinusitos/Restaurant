@@ -15,6 +15,7 @@ public class Client : MonoBehaviour
     public GameObject servedUI = null;
     public int scoreMultiplier = 100;
     public float malus = 0.1f;
+    public Animator animator = null;
     #endregion
 
     #region Private Fields
@@ -56,9 +57,10 @@ public class Client : MonoBehaviour
                 _target.table.ClientArrive(this);
                 choiceUI.SetActive(true);
                 _sit = true;
+                animator.SetBool("Sit", true);
                 _agent.enabled = false;
                 transform.position = _target.clientPlace.position;
-                transform.rotation = Quaternion.Euler(_target.clientPlace.forward);
+                transform.rotation = _target.clientPlace.rotation;
                 _choiceTime = Random.Range(timeMinChoice, timeMaxChoice);
             }
         }
@@ -116,6 +118,7 @@ public class Client : MonoBehaviour
 
     public void Leave()
     {
+        animator.SetBool("Sit", false);
         _target.ActivateClientMeal(false);
         servedUI.SetActive(false);
         _leaving = true;

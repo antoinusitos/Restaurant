@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour 
 {
-
     private bool _canMove = true;
 
     private float _stickDeadZone;
@@ -18,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     private GamepadManager _gamepadManager;
     private RenderingRotation _renderingRotation;
     private CarryObject _carryObject;
+
+    public Animator animator = null;
 
     private void Start()
     {
@@ -69,6 +70,15 @@ public class PlayerMovement : MonoBehaviour
             else if (_gamepadManager.GetStickPosY(_indexPlayer) <= -_stickDeadZone || Input.GetKey(KeyCode.S))
             {
                 direction += Vector3.back;
+            }
+
+            if(direction != Vector3.zero)
+            {
+                animator.SetBool("Running", true);
+            }
+            else
+            {
+                animator.SetBool("Running", false);
             }
 
             // Apply velocity
